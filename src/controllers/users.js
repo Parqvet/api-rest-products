@@ -1,5 +1,5 @@
 const express = require('express');
-const Succes = require('../handlers/succesHandler');
+const Success = require('../handlers/succesHandler');
 const {
     findById,
     findAll,
@@ -16,7 +16,7 @@ const {
 const getAllUsers = async (req, res, next) => {
     try {
         const users = await findAll();
-        res.json(new Succes(users));
+        res.json(new Success(users));
     } catch(err) {
         next(err);
     }
@@ -30,9 +30,9 @@ const getAllUsers = async (req, res, next) => {
 const createUser = async (req, res, next) => {
     try {
         let user = req.body;
-        user = await save();
+        user = await save(user);
 
-        res.status(201).json(new Succes(user));
+        res.status(201).json(new Success(user));
     } catch(err) {
         next(err);
     }
@@ -50,7 +50,7 @@ const updateUser = async (req, res, next) => {
     
         const userUpdated = await update(id, user);
     
-        res.json(new Succes(userUpdated));
+        res.json(new Success(userUpdated));
     } catch(err) {
         next(err);
     }
@@ -64,7 +64,7 @@ const updateUser = async (req, res, next) => {
 const getById = async (req, res, next) => {
     try {
         const user = await findById(req.params.id)
-        res.json(new Succes(user));
+        res.json(new Success(user));
 
     } catch(err) {
     next(err);
@@ -85,7 +85,7 @@ const deleteUser = async (req, res, next) => {
             message: `User with ${id} deleted`,
             user
         }
-        res.json(new Succes(user));
+        res.json(new Success(user));
     } catch(err) {
         next(err);
     }
