@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 const { Schema } = require('mongoose');
 
 const userSchema = new Schema({
@@ -13,7 +16,8 @@ const userSchema = new Schema({
         email: {
           type: String,
           requiredd: [true, 'Email required'],
-          unique: true
+          unique: true,
+          index: true
         },
         password: {
           type: String,
@@ -33,6 +37,9 @@ const userSchema = new Schema({
         }
     },
     { timestamps: true }
-  );
+    );
+
+    userSchema.plugin(uniqueValidator, { message: 'Already exist in the DB' })
+    userSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('users', userSchema);

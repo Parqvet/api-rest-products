@@ -1,5 +1,7 @@
 const express = require('express');
 const Success = require('../handlers/succesHandler');
+const logger = require('../loaders/logger');
+
 const {
     findById,
     findAll,
@@ -15,7 +17,8 @@ const {
  */
 const getAllUsers = async (req, res, next) => {
     try {
-        const users = await findAll();
+        
+        const users = await findAll(req.query.filter, req.query.options);
         res.json(new Success(users));
     } catch(err) {
         next(err);
