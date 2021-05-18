@@ -1,5 +1,11 @@
 const express = require('express');
-const User = require('../models/user');
+const {
+    findById,
+    findAll,
+    save,
+    update,
+    remove
+} = require('../services/userService');
 
 /**
  * 
@@ -8,7 +14,7 @@ const User = require('../models/user');
  */
 const getAllUsers = async (req, res, next) => {
     try {
-        const users = await User.find();
+        const users = await findAll();
         res.json(users);
     } catch(err) {
         next(err);
@@ -23,7 +29,7 @@ const getAllUsers = async (req, res, next) => {
 const createUser = async (req, res, next) => {
     try {
         let user = req.body;
-        user = await User.create(user);
+        user = await save();
     
         const result = {
             message: 'User created',
@@ -44,9 +50,8 @@ const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         let user = req.body;
-        user._id = id;
     
-        await User.updateOne(user)
+        await update(id, user);
     
         const result = {
             message: 'User updated',
@@ -63,11 +68,15 @@ const updateUser = async (req, res, next) => {
  * @param {express.Request} req 
  * @param {express.Response} res 
  */
-const updatePartialUser = (req, res, next) => {
-    const result = {
-        message: 'User updated with patch'
+const getById = (req, res, next) => {
+    try {
+        const result = {
+            user: findById(req.params.id)
+        }
+        res.json(result);
+    } catch(err) {
+    next(err);
     }
-    res.json(result);
 };
 
 /**
@@ -78,11 +87,11 @@ const updatePartialUser = (req, res, next) => {
 const deleteUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const user = await User.findById(id);
-        user.remove();
+        const user = remove(id);
     
         const result = {
-            message: `User with ${id} deleted`
+            message: `User with ${id} deleted`,
+            user
         }
         res.json(result);
     } catch(err) {
@@ -92,8 +101,8 @@ const deleteUser = async (req, res, next) => {
 
 module.exports = {
     getAllUsers,
+    getById,
     createUser,
     updateUser,
-    updatePartialUser,
     deleteUser
 }
